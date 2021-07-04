@@ -1,3 +1,4 @@
+using BoggleApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -36,6 +37,7 @@ namespace BoggleApi
                     );
             });
             services.AddControllers();
+            services.AddScoped<IBoggleBoxService, BoggleBoxService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BoggleApi", Version = "v1" });

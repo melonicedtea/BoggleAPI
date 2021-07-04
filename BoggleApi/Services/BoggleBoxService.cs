@@ -6,11 +6,11 @@ using BoggleApi.Models;
 
 namespace BoggleApi.Services
 {
-    public static class BoggleBoxService
+    public class BoggleBoxService : IBoggleBoxService
     {
-        static List<BoggleBox> boggleBoxes = new List<BoggleBox>();
+        private static List<BoggleBox> boggleBoxes = new List<BoggleBox>();
 
-        static char[,] dice = new char[,] {
+        private char[,] dice = new char[,] {
                 {'R', 'I', 'F', 'O', 'B', 'X'},
                 {'I', 'F', 'E', 'H', 'E', 'Y'},
                 {'D', 'E', 'N', 'O', 'W', 'S'},
@@ -29,39 +29,20 @@ namespace BoggleApi.Services
                 {'P', 'A', 'C', 'E', 'M', 'D'}
             };
 
-        public static BoggleBox GetBoggleBox()
+        public BoggleBox GetBoggleBox()
         {
-            BoggleBox boggleBox = new BoggleBox(); // make new box
-
-            Guid guid = Guid.NewGuid(); // generate new GUID
-
-            boggleBox.BoggleBoxID = guid; // assign GUID
-
-            List<Die> board = new List<Die>(); // make new list of Die
-
-            for (int i = 0; i < dice.GetLength(0); i++) // foreach die in dice
+            BoggleBox boggleBox = new BoggleBox
             {
-                Random random = new Random(); // new random
-                int r = random.Next(dice.GetLength(1)); // generate random number from 0 to length of dice sides
-                char Value = dice[i, r]; // get random value
-                Die die = new Die(Value); // make new die with random value
-                board.Add(die); // add new die to board
-            }
-
-            List<List<Die>> diceList = board.Cast<Die>()
-                .Select((x, i) => new { x, index = i / (int)(Math.Sqrt(dice.GetLength(0))) })  // Use overloaded 'Select' and calculate row index.
-                .GroupBy(x => x.index)                                   // Group on Row index
-                .Select(x => x.Select(s => s.x).ToList())                  // Create List for each group.  
-                .ToList();
-
-            boggleBox.Dies = diceList; // assignment
+                BoggleBoxID = Guid.NewGuid(),
+                Dies = CreateRandomDies()
+            }; // make new box
 
             boggleBoxes.Add(boggleBox); // add bogglebox to list of boggleboxes
 
             return boggleBox;
         }
 
-        public static BoggleBox GetBoggleBox(Guid boggleBoxId)
+        public BoggleBox GetBoggleBox(Guid boggleBoxId)
         {
             BoggleBox boggleBox = null;
 
@@ -74,6 +55,30 @@ namespace BoggleApi.Services
                 }
             }
             return boggleBox;
+        }
+
+        private List<List<Die>> CreateRandomDies()
+        {
+            List<List<Die>> diceList = null;
+
+            List<Die> board = new List<Die>(); // make new list of Die
+
+            for (int i = 0; i < dice.GetLength(0); i++) // foreach die in dice
+            {
+                Random random = new Random(); // new random
+                int r = random.Next(dice.GetLength(1)); // generate random number from 0 to length of dice sides
+                char Value = dice[i, r]; // get random value
+                Die die = new Die(Value); // make new die with random value
+                board.Add(die); // add new die to board
+            }
+
+            diceList = board.Cast<Die>()
+                .Select((x, i) => new { x, index = i / (int)(Math.Sqrt(dice.GetLength(0))) })  // Use overloaded 'Select' and calculate row index.
+                .GroupBy(x => x.index)                                   // Group on Row index
+                .Select(x => x.Select(s => s.x).ToList())                  // Create List for each group.  
+                .ToList();
+
+            return diceList;
         }
     }
 }

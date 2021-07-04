@@ -13,14 +13,19 @@ namespace BoggleApi.Controllers
     [ApiController]
     public class BoggleBoxController : ControllerBase
     {
+        private readonly IBoggleBoxService _boggleBoxService;
+        public BoggleBoxController(IBoggleBoxService boggleBoxService)
+        {
+            _boggleBoxService = boggleBoxService ?? throw new ArgumentNullException(nameof(boggleBoxService));
+        }
 
         [HttpGet("getbogglebox")]
-        public BoggleBox GetBoggleBox() => BoggleBoxService.GetBoggleBox();
+        public BoggleBox GetBoggleBox() => _boggleBoxService.GetBoggleBox();
 
         [HttpGet("getbogglebox/{boggleBoxId}")]
         public ActionResult<BoggleBox> GetBoggleBox(Guid boggleBoxId)
         {
-            var boggleBox = BoggleBoxService.GetBoggleBox(boggleBoxId);
+            var boggleBox = _boggleBoxService.GetBoggleBox(boggleBoxId);
 
             if (boggleBox == null)
             {
