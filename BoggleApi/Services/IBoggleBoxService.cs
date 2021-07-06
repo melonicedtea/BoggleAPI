@@ -10,5 +10,7 @@ namespace BoggleApi.Services
     {
         BoggleBox GetBoggleBox();
         BoggleBox GetBoggleBox(Guid guid);
+
+        bool CheckWordPresent(BoggleBox boggleBox, string word);
     }
 }

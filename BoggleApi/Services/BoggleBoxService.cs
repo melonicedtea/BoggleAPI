@@ -80,5 +80,36 @@ namespace BoggleApi.Services
 
             return diceList;
         }
+
+        public bool CheckWordPresent(BoggleBox boggleBox, string word)
+        {
+            bool isWordPresent = false;
+
+            List<List<Die>> dice = boggleBox.Dies;
+
+            string _word = word;
+
+            foreach (List<Die> row in dice)
+            {
+                foreach (Die die in row)
+                {
+                    if (_word.Contains(die.Value))
+                    {
+                        int index = _word.IndexOf(die.Value);
+                        _word = (index < 0) ?
+                            _word : _word.Remove(index, 1);
+                    }
+
+                }
+            }
+
+
+            if (_word.Length == 0)
+            {
+                isWordPresent = true;
+            }
+
+            return isWordPresent;
+        }
     }
 }
